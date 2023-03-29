@@ -1,42 +1,37 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
-public class Connection {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Search ingredients (separate by space): ");
-        String userInput = scanner.nextLine();
-        String[] searchTerms = userInput.split("\\s+"); // split input into separate words
-        String[] fileNames = {".idea/NasiAyam.txt", ".idea/NasiLemak.txt"};
 
+public class FileSearch {
+    private static String[] fileNames;
+    private static String[] searchWords;
+
+    public static void searchFiles(String[] fileNames, String[] searchWords) {
+        FileSearch.fileNames = fileNames;
+        FileSearch.searchWords = searchWords;
         for (String fileName : fileNames) {
-
             try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-
-                StringBuilder fileContent = new StringBuilder();
+                String fileContent = "";
                 String line;
-
-                    while ((line = br.readLine()) != null) {
-                        fileContent.append(line).append("\n"); // add newline character to preserve file formatting
+                while ((line = br.readLine()) != null) {
+                    fileContent += line + "\n"; // add newline character to preserve file formatting
                 }
-            boolean allMatch = true;
 
-                for (String term : searchTerms) {
-                if (!fileContent.toString().contains(term)) {
-                    allMatch = false;
-                    break;
+                boolean allWordsFound = true;
+                for (String word : searchWords) {
+                    if (!fileContent.contains(word)) {
+                        allWordsFound = false;
+                        break;
+                    }
                 }
-            }
-            if (allMatch) {
-                System.out.println("ingredient found in " + fileName + ":");
-                System.out.println(fileContent);
-            }
-        }
-            catch (IOException e) {
+
+                if (allWordsFound) {
+                    System.out.println("Match found in " + fileName + ":");
+                    System.out.println(fileContent);
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        scanner.close();
     }
 }
